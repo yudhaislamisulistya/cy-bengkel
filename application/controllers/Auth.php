@@ -5,7 +5,6 @@ class Auth extends CI_Controller {
 
     function __construct() {
         parent::__construct();
-
         $this->load->model("user_model");
     }
 
@@ -13,10 +12,9 @@ class Auth extends CI_Controller {
         $this->login();
     }
 
-
-	public function login()
-	{
-        if($this->session->auth['logged_in']) {
+    public function login() {
+        // Check if the auth key exists and if the user is logged in
+        if($this->session->userdata('auth') && $this->session->auth['logged_in']) {
             redirect(base_url("dashboard"));
         }
 
@@ -27,6 +25,7 @@ class Auth extends CI_Controller {
             "pageTitle" => "Login",
             "authPage" => TRUE
         ];
+        
         if($this->input->post()) {
             $username = $this->input->post("username");
             $password = $this->input->post("password");
@@ -43,7 +42,7 @@ class Auth extends CI_Controller {
             } else {
                 $fetch = $query->row();
 
-                if(!password_verify($password,$fetch->password)) {
+                if(!password_verify($password, $fetch->password)) {
                     $error = "Username atau password yang anda masukkan salah";
                 } else {
                     $setSession = [
@@ -51,7 +50,7 @@ class Auth extends CI_Controller {
                         "id" => $fetch->id
                     ];
 
-                    $this->session->set_userdata("auth",$setSession);
+                    $this->session->set_userdata("auth", $setSession);
 
                     redirect(base_url("dashboard"));
                 }
@@ -62,16 +61,17 @@ class Auth extends CI_Controller {
             }
         }
 
-		$this->load->view('header',$push);
-		$this->load->view('login',$push);
-		$this->load->view('footer',$push);
+        $this->load->view('header', $push);
+        $this->load->view('login', $push);
+        $this->load->view('footer', $push);
     }
-    
-    function logout() {
 
-        if($this->session->auth['logged_in']) {
+    function logout() {
+        // Check if the auth key exists and if the user is logged in
+        if($this->session->userdata('auth') && $this->session->auth['logged_in']) {
             $this->session->unset_userdata("auth");
             redirect(base_url("auth/login"));
         }
     }
 }
+?>

@@ -29,6 +29,8 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
+                                    <th style="width:40%">Kode</th>
+                                    <th style="width:40%">Jenis</th>
                                     <th style="width:40%">Nama</th>
                                     <th style="width:20%">Harga</th>
                                     <th>Stok</th>
@@ -59,6 +61,14 @@
                             <div class="form-group">
                                 <label>Harga Sparepart</label>
                                 <input type="number" name="price" class="form-control" id="price" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Jenis Sparepart</label>
+                                <input type="text" name="jenis" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Kode Sparepart</label>
+                                <input type="text" name="kode" class="form-control">
                             </div>
                         </form>
                     </div>
@@ -93,6 +103,8 @@
                 $(".btn-show-add").on("click",function(){
                     jQuery("input[name=name]").val("");
                     jQuery("input[name=price]").val("");
+                    jQuery("input[name=kode]").val("");
+                    jQuery("input[name=jenis]").val("");
                     jQuery("#compose .modal-title").html("Tambah Sparepart");
                     jQuery("#compose-form").attr("action","<?=base_url("sparepart/insert");?>");
                 });
@@ -109,8 +121,12 @@
                 $('.btn-submit').on("click",function(){
                     var form = {
                         "name": jQuery("input[name=name]").val(),
-                        "price": jQuery("input[name=price]").val()
+                        "price": jQuery("input[name=price]").val(),
+                        "kode": jQuery("input[name=kode]").val(),
+                        "jenis": jQuery("input[name=jenis]").val()
                     }
+
+                    console.log(form);
 
                     var action = jQuery("#compose-form").attr("action");
 
@@ -121,6 +137,8 @@
                         dataType: "json",
                         success: function(data){
                             if(data.status) {
+                                jQuery("input[name=kode]").val("");
+                                jQuery("input[name=jenis]").val("");
                                 jQuery("input[name=name]").val("");
                                 jQuery("input[name=price]").val("");
     
@@ -146,9 +164,10 @@
                 $('body').on("click",".btn-delete",function() {
                     var id = jQuery(this).attr("data-id");
                     var name = jQuery(this).attr("data-name");
+                    var kode = jQuery(this).attr("data-kode");
+                    var jenis = jQuery(this).attr("data-jenis");
                     jQuery("#delete .modal-body").html("Anda yakin ingin menghapus <b>"+name+"</b>");
                     jQuery("#delete").modal("toggle");
-
                     jQuery("#delete .btn-del-confirm").attr("onclick","deleteData("+id+")");
                 })
 
@@ -176,11 +195,15 @@
                     var id = jQuery(this).attr("data-id");
                     var name = jQuery(this).attr("data-name");
                     var price = jQuery(this).attr("data-price");
+                    var kode = jQuery(this).attr("data-kode");
+                    var jenis = jQuery(this).attr("data-jenis");
 
                     jQuery("#compose .modal-title").html("Edit Sparepart");
                     jQuery("#compose-form").attr("action","<?=base_url();?>sparepart/update/"+id);
                     jQuery("input[name=name]").val(name);
                     jQuery("input[name=price]").val(price);
+                    jQuery("input[name=kode]").val(kode);
+                    jQuery("input[name=jenis]").val(jenis);
 
                     jQuery("#compose").modal("toggle");
                 });
